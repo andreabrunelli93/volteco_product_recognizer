@@ -9,6 +9,8 @@ import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 from PIL import Image
+import webbrowser
+
 
 import requests
 from sentence_transformers import SentenceTransformer
@@ -68,5 +70,8 @@ if uploaded_file is not None:
             },
         })
 
-        pos_max = output.index(max(output))
-        st.write(df_product.iloc[pos_max])
+    pos_max = output.index(max(output))
+    st.write(f"Ehi ehi, hai davanti a te un bel {df_product.iloc[pos_max]['name']}")
+
+    if st.button('Vai al prodotto'):
+        webbrowser.open_new_tab(df_product.iloc[pos_max]['loc'])
