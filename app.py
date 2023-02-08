@@ -16,6 +16,7 @@ import webbrowser
 
 st.set_page_config(page_title="OCR with Streamlit", page_icon=":camera:", layout="wide")
 
+st.title("VOLTECO Product Recognizer")
 
 def easy_ocr_process(img):
 
