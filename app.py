@@ -18,8 +18,6 @@ st.set_page_config(page_title="OCR with Streamlit", page_icon=":camera:", layout
 
 st.title("VOLTECO Product Recognizer")
 
-lang = st.selectbox("Seleziona la lingua di riconoscimento", ("en", "it"))
-
 def easy_ocr_process(img):
 
     reader = easyocr.Reader([lang]) # this needs to run only once to load the model into memory
@@ -67,22 +65,26 @@ def find_top_3_indices(numbers):
     return [i[0] for i in sorted_numbers[:3]], [i[1] for i in sorted_numbers[:3]]
     
 #Upload della foto
-uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+col1, col2 = st.columns(2)
+with col1:
+    lang = st.selectbox("Seleziona la lingua di riconoscimento", ("en", "it"))
+    uploaded_file = st.file_uploader("Carica una immagine dal telefono", type=["jpg", "jpeg", "png"])
+    picture = st.camera_input("Scatta una foto")
+with col2:
+    if uploaded_file is not None or picture is not None:
+        with st.spinner('Stiamo processando la foto...'):
+            output = query({
+                "inputs": {
+                    "source_sentence": easy_ocr_process(uploaded_file),
+                    "sentences": df_product["name"].values.tolist()
+                },
+            })
 
-if uploaded_file is not None:
-    with st.spinner('Stiamo processando la foto...'):
-        output = query({
-            "inputs": {
-                "source_sentence": easy_ocr_process(uploaded_file),
-                "sentences": df_product["name"].values.tolist()
-            },
-        })
-
-    best_three, probability = find_top_3_indices(output)
-    for i in range(3):
-        st.write(f"Ehi ehi, potresti avere davanti: **{df_product.iloc[best_three[i]]['name']}**, con una probabilità del **{probability[i]*100:.2f}%**")
-        if st.button(f"Vai al prodotto {i+1}: {df_product.iloc[best_three[i]]['name']}"):
-            webbrowser.open(df_product.iloc[best_three[i]]['loc'])
-       
+        best_three, probability = find_top_3_indices(output)
+        for i in range(3):
+            st.write(f"Ehi ehi, potresti avere davanti: **{df_product.iloc[best_three[i]]['name']}**, con una probabilità del **{probability[i]*100:.2f}%**")
+            if st.button(f"Vai al prodotto {i+1}: {df_product.iloc[best_three[i]]['name']}"):
+                webbrowser.open(df_product.iloc[best_three[i]]['loc'])
+        
 
 
