@@ -70,12 +70,18 @@ with col1:
     lang = st.selectbox("Seleziona la lingua di riconoscimento", ("en", "it"))
     uploaded_file = st.file_uploader("Carica una immagine dal telefono", type=["jpg", "jpeg", "png"])
     picture = st.camera_input("Scatta una foto")
+    
 with col2:
     if uploaded_file is not None or picture is not None:
+        if uploaded_file is not None:
+            elemento_foto = uploaded_file
+        if picture is not None:
+            elemento_foto = picture
+
         with st.spinner('Stiamo processando la foto...'):
             output = query({
                 "inputs": {
-                    "source_sentence": easy_ocr_process(uploaded_file),
+                    "source_sentence": easy_ocr_process(elemento_foto),
                     "sentences": df_product["name"].values.tolist()
                 },
             })
