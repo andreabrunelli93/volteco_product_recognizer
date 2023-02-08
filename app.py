@@ -8,8 +8,7 @@ import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 from PIL import Image
-import webbrowser
-
+import numpy as np
 
 import requests
 from sentence_transformers import SentenceTransformer
@@ -21,7 +20,7 @@ st.set_page_config(page_title="OCR with Streamlit", page_icon=":camera:", layout
 def easy_ocr_process(img):
 
     reader = easyocr.Reader(['it','en']) # this needs to run only once to load the model into memory
-    testo = reader.readtext(Image.open(img), detail = 0, paragraph=True)
+    testo = reader.readtext(np.asarray(Image.open(img)), detail = 0, paragraph=True)
     st.write(' '.join(testo))
     testo_clean = ' '.join(testo)
 
