@@ -18,9 +18,11 @@ st.set_page_config(page_title="OCR with Streamlit", page_icon=":camera:", layout
 
 st.title("VOLTECO Product Recognizer")
 
+lang = st.selectbox("Seleziona la lingua di riconoscimento", ("en", "it"))
+
 def easy_ocr_process(img):
 
-    reader = easyocr.Reader(['en']) # this needs to run only once to load the model into memory
+    reader = easyocr.Reader([lang]) # this needs to run only once to load the model into memory
 
     image = Image.open(img)
 
@@ -35,7 +37,7 @@ def easy_ocr_process(img):
         height, width = image.size
         st.write("Compressione ridotta")
  
-    testo = reader.readtext(np.asarray(image), detail = 0, paragraph=True)
+    testo = reader.readtext(np.asarray(image), detail = 0, paragraph=False)
     testo_clean = ' '.join(testo)
     st.write(f"Testo rilevato: {testo_clean.lower()}")
 
