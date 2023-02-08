@@ -11,7 +11,6 @@ from PIL import Image
 import numpy as np
 
 import requests
-from sentence_transformers import SentenceTransformer
 import webbrowser
 
 
@@ -36,8 +35,6 @@ list_of_product = df_product['loc'].apply( lambda x: x.rsplit('/', 1)[-1])
 df_product['name'] = list_of_product
 #df_product
 
-
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 API_TOKEN = "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"
 
