@@ -1,7 +1,7 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 
-import keras_ocr
+import easyocr
 import pandas as pd
 from rake_nltk import Rake
 
@@ -19,24 +19,16 @@ from sentence_transformers import SentenceTransformer
 st.set_page_config(page_title="OCR with Streamlit", page_icon=":camera:", layout="wide")
 
 
-pipeline = keras_ocr.pipeline.Pipeline()
+def easy_ocr_process(img):
 
-def keras_ocr_process(img):
 
-    images = [
-            keras_ocr.tools.read(img)
-        ]
+    reader = easyocr.Reader(['it','en']) # this needs to run only once to load the model into memory
+    testo = reader.readtext(Image.open(img), detail = 0, paragraph=True)
+    st.write(' '.join(testo))
+    testo_clean = ' '.join(testo)
 
-    prediction_groups = pipeline.recognize(images)
-
-    testo = []
-
-    for elem in prediction_groups[0]:
-        testo.append(elem[0])
-
-    testo_unito = ' '.join(testo)
     rake_nltk_var = Rake()
-    rake_nltk_var.extract_keywords_from_text(testo_unito)
+    rake_nltk_var.extract_keywords_from_text(testo_clean)
     keyword_extracted = rake_nltk_var.get_ranked_phrases()
     return keyword_extracted[0]
 
@@ -65,7 +57,7 @@ if uploaded_file is not None:
     with st.spinner('Stiamo processando la foto...'):
         output = query({
             "inputs": {
-                "source_sentence": keras_ocr_process(uploaded_file),
+                "source_sentence": easy_ocr_process(uploaded_file),
                 "sentences": df_product["name"].values.tolist()
             },
         })
