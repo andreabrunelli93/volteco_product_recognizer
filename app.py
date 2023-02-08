@@ -29,6 +29,8 @@ def easy_ocr_process(img):
     image = Image.open(img)
 
     height, width = image.size
+    if width > 2000:
+        image = image.resize((height//4 ,width//4), Image.ANTIALIAS)
     if width > 1000:
         image = image.resize((height//2 ,width//2), Image.ANTIALIAS)
  
