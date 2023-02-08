@@ -23,7 +23,7 @@ def easy_ocr_process(img):
     reader = easyocr.Reader(['it','en']) # this needs to run only once to load the model into memory
     testo = reader.readtext(np.asarray(Image.open(img)), detail = 0, paragraph=True)
     testo_clean = ' '.join(testo)
-    st.write(f"testo rilevato: {testo_clean.lower()}")
+    st.write(f"Testo rilevato: {testo_clean.lower()}")
 
     rake_nltk_var = Rake()
     rake_nltk_var.extract_keywords_from_text(testo_clean)
@@ -48,7 +48,7 @@ def query(payload):
 
 def find_top_3_indices(numbers):
     sorted_numbers = sorted(enumerate(numbers), key=lambda x: x[1], reverse=True)
-    return [i[0] for i in sorted_numbers[:3]]
+    return [i[0] for i in sorted_numbers[:3]], [i[1] for i in sorted_numbers[:3]]
     
 
 uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
@@ -62,9 +62,9 @@ if uploaded_file is not None:
             },
         })
 
-    best_three = find_top_3_indices(output)
+    best_three, probability = find_top_3_indices(output)
     for i in range(3):
-        st.write(f"Ehi ehi, potresti avere davanti: {df_product.iloc[best_three[i]]['name']}")
+        st.write(f"Ehi ehi, potresti avere davanti: **{df_product.iloc[best_three[i]]['name']}**, con una probabilità del **{probability[i]*100:.2f}%**")
         if st.button(f"Vai al prodotto {i+1}: {df_product.iloc[best_three[i]]['name']}"):
             webbrowser.open_new_tab(df_product.iloc[best_three[i]]['loc'])
        
