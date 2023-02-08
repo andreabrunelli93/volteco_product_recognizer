@@ -70,7 +70,7 @@ with col1:
     lang = st.selectbox("Seleziona la lingua di riconoscimento", ("en", "it"))
     uploaded_file = st.file_uploader("Carica una immagine dal telefono", type=["jpg", "jpeg", "png"])
     picture = st.camera_input("Scatta una foto")
-    
+
 with col2:
     if uploaded_file is not None or picture is not None:
         if uploaded_file is not None:
@@ -89,8 +89,14 @@ with col2:
         best_three, probability = find_top_3_indices(output)
         for i in range(3):
             st.write(f"Ehi ehi, potresti avere davanti: **{df_product.iloc[best_three[i]]['name']}**, con una probabilità del **{probability[i]*100:.2f}%**")
-            if st.button(f"Vai al prodotto {i+1}: {df_product.iloc[best_three[i]]['name']}"):
-                webbrowser.open(df_product.iloc[best_three[i]]['loc'])
+            st.write(f'''
+                <a target="_blank" href="{df_product.iloc[best_three[i]]['loc']}">
+                    <button>
+                        "Vai al prodotto {i+1}: {df_product.iloc[best_three[i]]['name']}"
+                    </button>
+                </a>
+                ''',
+                unsafe_allow_html=True)
         
 
 
