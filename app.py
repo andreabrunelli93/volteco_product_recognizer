@@ -25,12 +25,14 @@ def easy_ocr_process(img):
     image = Image.open(img)
 
     height, width = image.size
-    if width > 2000:
-        image = image.resize((height//4 ,width//4), Image.ANTIALIAS)
-        st.write("Compressione forte")
-    if width > 1000:
-        image = image.resize((height//2 ,width//2), Image.ANTIALIAS)
-        st.write("Compressione ridotta")
+
+    match width:
+        case _ if width > 2000:
+            image = image.resize((height//4 ,width//4), Image.ANTIALIAS)
+            st.write("Compressione forte")
+        case _ if width > 1000:
+            image = image.resize((height//2 ,width//2), Image.ANTIALIAS)
+            st.write("Compressione ridotta")
  
     testo = reader.readtext(np.asarray(image), detail = 0, paragraph=True)
     testo_clean = ' '.join(testo)
