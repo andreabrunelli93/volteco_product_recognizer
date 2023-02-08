@@ -12,6 +12,10 @@ import numpy as np
 
 import requests
 import webbrowser
+import cv2
+import skimage.measure
+from skimage.transform import rescale, resize, downscale_local_mean
+
 
 
 st.set_page_config(page_title="OCR with Streamlit", page_icon=":camera:", layout="wide")
@@ -21,7 +25,14 @@ st.title("VOLTECO Product Recognizer")
 def easy_ocr_process(img):
 
     reader = easyocr.Reader(['it','en']) # this needs to run only once to load the model into memory
-    testo = reader.readtext(np.asarray(Image.open(img)), detail = 0, paragraph=True)
+
+    image = Image.open(img)
+
+    height, width = image.size
+    if width > 1000:
+        image = image.resize((height//2 ,width//2), Image.ANTIALIAS)
+ 
+    testo = reader.readtext(np.asarray(image), detail = 0, paragraph=True)
     testo_clean = ' '.join(testo)
     st.write(f"Testo rilevato: {testo_clean.lower()}")
 
